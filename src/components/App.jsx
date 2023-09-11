@@ -1,85 +1,75 @@
 import React from 'react';
-
-import { ToastContainer } from 'react-toastify';
 import { Component } from "react";
 import { Searchbar } from "./Searchbar/Searchbar";
-
 import Modal from './Modal/Modal';
 import ImageGallery from './ImageGallery/ImageGallery';
 import Button from './Button/Button';
-import SearchInfo  from './SearchInfo';
+import { getRequest } from './Services/getRequest';
+import toast, { Toaster } from 'react-hot-toast';
+import { CircleLoader } from 'react-spinners';
 
 
 export class App extends Component {
-  state = { 
-    searchText: ''
+  state = {     
+    images: [],
+    page: 1,
+    query: '',
+    visible: false,
+    error: false, 
+    isLoading: false, 
   };
+ 
+  async componentDidUpdate(prevProps, prevState) { 
+  if (prevState.query !== this.state.query ||
+      prevState.page !== this.state.page)
+  {
+    try {
+      this.setState({error: false, isLoading: true})
+       const data = await getRequest(this.state.query.trim(), this.state.page);
+      console.log(data);
+      this.setState(() => ({
+        images: [...this.state.images, ...data.hits],
+        visible: this.state.page === Math.ceil(data.totalHits / 12) ? false : true
+      }));
+    } catch (error) {
+      this.setState({error: true})
+      toast('Oops, error!')
+    }
+    finally{this.setState({isLoading: false})}
+      
+    }
+   };
 
-  handleSearchInfo = (searchText) => { 
-    this.setState({searchText})
+  handleSubmit = query => {
+   
+    if (!query.trim()) {
+      return;
+    }
+    this.setState({images: [], page: 1 , query})
   };
+  onLoadMore = () => {
+    this.setState(prevState => ({
+    page: prevState.page + 1
+  }))
+}
 
-  
 
-  render() {
-    
+  render() {   
 
     return (
-      <div>
-        <Searchbar handleSearchInfo={ this.handleSearchInfo} />
-        <Button />
-        <SearchInfo searchText={this.state.searchText} />
+    <>
+        {!this.state.error && (<div>
+        <Searchbar  onSubmit={this.handleSubmit } />
+          <CircleLoader color="#36d7b7" loading={this.state.isLoading } />         
+       
         <Modal />
-        <ImageGallery />  
-        <ToastContainer />
-      </div>
+        <ImageGallery images={this.state.images} />  
+        
+        {this.state.visible && (<Button onLoadMore={this.onLoadMore} />)}
+        <Toaster />
+      </div>)}
+      </>
     )    
   };
 };
 
-// return (
-//       <div style={{ maxWidth: 1170, margin: '0 auto', padding: 20 }}>
-//         {this.state.loading&&<p>Loading loading</p>}
-//         {this.state.pokemon&&<div>hellow</div>}
-//       </div>
-//     )---------------------------------------
-
-// handleFormSubmit = pokemonName => {
-  //   this.state.setState({ pokemonName })
-  // }
-  
-  // export class App extends Component {
-  // state = {
-  //   query: '',
-  //    images: [],
-  //    page: 1,
-  //    loading: false,
-  //   };
-    
-  // componentDidMount() {
-  //   this.setState({ loading: true });
-
-
-  //   fetch('https://pixabay.com/api/?q=cat&page=1&key=38039497-5ee2ddc1c8430029b87bf9d3f&image_type=photo&orientation=horizontal&per_page=12')
-  //     .then(res => res.json())
-  //   .then(pokemon => this.setState({pokemon})).finally(()=> this.setState({loading: false}))
-  // };
-  
-  
-  // handleLoadMore = () => {
-  //    this.setState(prevState => ({
-  //     page: prevState.page + 1,
-  //    }));
-  //  };
-  
-  // componentDidUpdate(prevProps, prevState) { 
-  //   if (prevState.guery !== this.state.query ||
-  //     prevState.page !== this.state.page)
-  //   {
-  //     // http request
-  //   }
-  // };
-
-  // handleLoadMore = () => {
-  //   this.setState(prevState =>({page:prevState.page + 1}))
-  // };

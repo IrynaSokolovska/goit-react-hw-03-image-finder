@@ -27,6 +27,6 @@ export const LoadMoreBtn = styled.button`
 
   &:hover,
   &:focus {
-    background-color: #fff;
+    background-color: red;
   }
 `;

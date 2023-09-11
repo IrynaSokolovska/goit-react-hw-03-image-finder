@@ -6,45 +6,29 @@ export class Searchbar extends Component {
   state = {
     value: '',
   };
+
   handleChange = evt => {
     this.setState({ value: evt.target.value.toLowerCase() });
   };
 
-  // handleChange = ({ target: { value } }) => {
-  //   this.setState({ value });
-  // };
-
-  handleSubmit = evt => {
-    evt.pteventDefault();
-    this.props.handleSearch(this.state.value);
-
-    // if (this.state.pokemonName.trim() === '') {
-    //   return toast('Wow so easy!');
-    // }
-    // this.props.onSubmitF(this.state.pokemonName);
-    // this.state({ pokemonName: '' });
-  };
-
-  // handleSubmit = evt => {
-  //   evt.pteventDefault();
-  //   if (this.state.pokemonName.trim() === '') {
-  //     return toast('Wow so easy!');
-  //   }
-  //   this.props.onSubmitF(this.state.pokemonName);
-  //   this.state({ pokemonName: '' });
-  // };
-
   render() {
+    console.log(this.props);
+
     return (
       <SearchBar>
-        <SearchBarForm onSubmit={this.handleSubmit}>
+        <SearchBarForm
+          onSubmit={evt => {
+            evt.preventDefault();
+            this.props.onSubmit(this.state.value);
+          }}
+        >
           <SearchBarInput
             className="input"
             type="text"
             autoComplete="off"
             autoFocus
             placeholder="Search images and photos"
-            name="pokemonName"
+            name="query"
             value={this.state.value}
             onChange={this.handleChange}
           />
@@ -56,6 +40,7 @@ export class Searchbar extends Component {
     );
   }
 }
+
 export default Searchbar;
 
 // export const Searchbar = ({ onSubmit }) => {
