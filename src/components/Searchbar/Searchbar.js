@@ -1,33 +1,42 @@
 import { Component } from 'react';
-import { toast } from 'react-toastify';
-import {
-  SearchBarDiv,
-  SearchBarForm,
-  SearchBarInput,
-} from './SearchBar.styled';
+// import { toast } from 'react-toastify';
+import { SearchBar, SearchBarForm, SearchBarInput } from './SearchBar.styled';
 
 export class Searchbar extends Component {
   state = {
     value: '',
-    pokemonName: '',
+  };
+  handleChange = evt => {
+    this.setState({ value: evt.target.value.toLowerCase() });
   };
 
-  handleNameChange = evt => {
-    this.setState({ pokemonName: evt.currentTarget.value.toLowerCase() });
-  };
+  // handleChange = ({ target: { value } }) => {
+  //   this.setState({ value });
+  // };
 
   handleSubmit = evt => {
     evt.pteventDefault();
-    if (this.state.pokemonName.trim() === '') {
-      return toast('Wow so easy!');
-    }
-    this.props.onSubmitF(this.state.pokemonName);
-    this.state({ pokemonName: '' });
+    this.props.handleSearch(this.state.value);
+
+    // if (this.state.pokemonName.trim() === '') {
+    //   return toast('Wow so easy!');
+    // }
+    // this.props.onSubmitF(this.state.pokemonName);
+    // this.state({ pokemonName: '' });
   };
+
+  // handleSubmit = evt => {
+  //   evt.pteventDefault();
+  //   if (this.state.pokemonName.trim() === '') {
+  //     return toast('Wow so easy!');
+  //   }
+  //   this.props.onSubmitF(this.state.pokemonName);
+  //   this.state({ pokemonName: '' });
+  // };
 
   render() {
     return (
-      <SearchBarDiv>
+      <SearchBar>
         <SearchBarForm onSubmit={this.handleSubmit}>
           <SearchBarInput
             className="input"
@@ -36,14 +45,14 @@ export class Searchbar extends Component {
             autoFocus
             placeholder="Search images and photos"
             name="pokemonName"
-            defaultValue={this.state.pokemonName}
-            onChange={this.state.handleNameChange}
+            value={this.state.value}
+            onChange={this.handleChange}
           />
           <button type="submit" className="button">
             <span className="button-label">Search</span>
           </button>
         </SearchBarForm>
-      </SearchBarDiv>
+      </SearchBar>
     );
   }
 }
@@ -82,4 +91,54 @@ export default Searchbar;
 //      {this.state.images.length > 0 && <div>Gallery</div>}
 //      <button onClick={this.handleLoadMore}>Load more</button>
 //    </div>
-//  );
+//  );-----------------------------------------------------------------
+// import { Component } from 'react';
+// import { toast } from 'react-toastify';
+// import {
+//   SearchBarDiv,
+//   SearchBarForm,
+//   SearchBarInput,
+// } from './SearchBar.styled';
+
+// export class Searchbar extends Component {
+//   state = {
+//     value: '',
+//     pokemonName: '',
+//   };
+
+//   handleNameChange = evt => {
+//     this.setState({ pokemonName: evt.currentTarget.value.toLowerCase() });
+//   };
+
+//   handleSubmit = evt => {
+//     evt.pteventDefault();
+//     if (this.state.pokemonName.trim() === '') {
+//       return toast('Wow so easy!');
+//     }
+//     this.props.onSubmitF(this.state.pokemonName);
+//     this.state({ pokemonName: '' });
+//   };
+
+//   render() {
+//     return (
+//       <SearchBarDiv>
+//         <SearchBarForm onSubmit={this.handleSubmit}>
+//           <SearchBarInput
+//             className="input"
+//             type="text"
+//             autoComplete="off"
+//             autoFocus
+//             placeholder="Search images and photos"
+//             name="pokemonName"
+//             defaultValue={this.state.pokemonName}
+//             onChange={this.state.handleNameChange}
+//           />
+//           <button type="submit" className="button">
+//             <span className="button-label">Search</span>
+//           </button>
+//         </SearchBarForm>
+//       </SearchBarDiv>
+//     );
+//   }
+// }
+// export default Searchbar;
